@@ -1,0 +1,259 @@
+Node.js Programming area
+
+1.Node REPL
+2.Node and js apis
+3.Node core apis
+4.Styles of writing async programming
+   ->Callback pattern
+   ->Promise Pattern
+   ->Promise with Async and await Pattern
+
+
+Setup node.js:
+...............
+https://nodejs.org/en
+
+
+1.Node REPL - Read Evaluate Print loop
+
+Node REPL is used to run js programs interactive mode.
+
+Js programs are executed in two modes
+
+1.interactive mode - REPL mode
+2.script mode - by loading script on to the runtime
+
+REPL:
+
+> let a =10
+undefined
+> a
+10
+> a *10
+100
+> name="Subramanian"
+'Subramanian'
+> name
+'Subramanian'
+> new Date()
+2025-01-20T07:20:42.624Z
+> Math.random()
+0.5686137549251014
+> Math.random()
+0.16463346625778552
+> document
+Uncaught ReferenceError: document is not defined
+> window
+Uncaught ReferenceError: window is not defined
+> process
+process {
+  version: 'v22.13.0',
+  versions: {
+    node: '22.13.0',
+    acorn: '8.14.0',
+    ada: '2.9.2',
+    amaro: '0.2.0',
+}
+...........................................................................................
+				Script mode
+...........................................................................................
+
+hello.js
+ console.log('hello')
+
+How to run?
+
+>node hello.js
+
+eg:
+G:\IBM\2025\Jan\Node\corenodeapp>node src/index.js
+hello node.js
+............................................................................................
+			   Async Programming/Non Blocking patterns
+.............................................................................................
+Fundamental Requirement:
+..............................................
+
+1.OS should support non blocking apis like select,poll, epoll, kQueue, IOCP
+2.Program languages/platforms also should provide high level apis to map os low level apis
+
+Nonblocking Applications Development style:
+.................................................................................
+1.callbacks
+2.Promises
+3.Async await
+4.reactive programming 
+.............................................................................................
+Callbacks:
+1.callbacks:
+  Callback is listener function which gets registered during compile time
+  and executed during runtime by the event loop when ever the event is emitted by kernel or application
+
+event : 
+  signal 
+eg: data is ready, error occurred, operation is completed
+
+event contains:
+ 1.Name of the event - data, error, close
+ 2.data
+
+Req for async programming:
+ 
+1.You need high level non blocking api - provided by node.js 
+2.listener api which is called "function as parameter/hof" 
+
+HOF functions are becoming listeners/callbacks which are called when ever event is emitted.
+
+Nonblocking apis:
+
+1.timer
+   -setTimeout
+   -setInterval
+2.io
+   web
+   fs
+   socket
+ etc...
+3.process api
+  nextTick
+
+...................................................................................
+			How to implement non blocking using timers
+...................................................................................
+
+create new project
+
+mkdir asyncstyles
+
+
+Use case: sync flow
+
+//callbacks -sync flow
+
+function blockMe(message){
+  console.log(message)
+}
+function greet(){
+    console.log('greet')
+}
+function main(){
+  blockMe('start')
+  greet()
+  blockMe('end')
+
+}
+main()
+
+
+Use case async flow:
+//callbacks -sync flow
+
+function blockMe(message) {
+    console.log(message)
+}
+function delay(cb) {
+   // cb()
+   setTimeout(cb,5000)
+}
+function main() {
+    blockMe('start')
+    delay(function () {
+        console.log('delay')
+    })
+    blockMe('end')
+
+}
+main()
+
+Usecase : timer with data
+//callbacks -sync flow
+
+function blockMe(message) {
+    console.log(message)
+}
+function delay(cb) {
+   setTimeout(cb,5000,'delay')
+}
+function main() {
+    blockMe('start')
+    delay(function (data) {
+        console.log(data)
+    })
+    blockMe('end')
+
+}
+main()
+********************************
+
+Complex Flow:
+
+const login = (userName, password, resolve, reject) => {
+    //biz logic
+    if (userName === 'admin' && password === 'admin') {
+        setTimeout(resolve, 1000, 'Login Success')
+    } else {
+        setTimeout(reject, 1000, 'Login failed')
+    }
+}
+
+
+function main() {
+    login('admin', 'admin', (status) => { console.log(status) }, (err) => { console.log(err) })
+    login('xx', 'yy', (status) => { console.log(status) }, (err) => { console.log(err) })
+
+}
+main()
+********************************************************************************************************************************************************
+										Nested Callbacks
+......................................................................................................................................................................................................................................
+
+The output of one callback will be input into another callback -  async composition.
+
+//callback nesting: the output of one callback will be input to another callback
+
+//getUser ---> login ---> showdashboard
+
+const getUser = (resovle, reject) => {
+    console.log('getUser is called')
+    let user = {
+        name: 'admin'
+    }
+   // user=null
+    if (user) {
+        setTimeout(resovle, 1000, user)
+    } else {
+        setTimeout(reject, 1000, 'User is not found')
+    }
+}
+
+const login = (user, resovle, reject) => {
+    console.log('login is called')
+    if (user.name === 'admin') {
+        setTimeout(resovle, 1000, 'login is success')
+    } else {
+        setTimeout(reject, 1000, 'login is failed')
+    }
+}
+const showDashboard = (status, resovle, reject) => {
+    console.log('showDashboard is called')
+    if (status === 'login is success') {
+        setTimeout(resovle, 1000, 'welcome to dashboard')
+    } else {
+        setTimeout(reject, 1000, 'welcome to guest')
+    }
+}
+
+function main() {
+    getUser((user) => {
+        login(user, status => {
+            showDashboard(status, (page) => {
+                console.log(page)
+            }, (err) => {
+                console.log(err)
+            })
+        }, err => console.log(err))
+    }, (err) => {
+        console.log(err)
+    })
+}
+main()
