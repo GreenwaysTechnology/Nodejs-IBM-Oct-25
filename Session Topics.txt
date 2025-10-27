@@ -1,0 +1,20 @@
+Session Topics
+
+1.Node.js Fundamentals and architecture
+2.Node.js Nonblocking programming and implementation
+3.Web Programming using node.js
+4.File Processing using node.js
+5.modules patterns
+6.npm fundamentals
+7.express.js 
+8.data base programming using ORM framework
+9.Microservices patterns and implementation using moleculer.js
+
+
+Pre knowledge:
+1.javascript 
+2.database fundamentals
+
+Software setup:
+1.node.js
+2.vs code

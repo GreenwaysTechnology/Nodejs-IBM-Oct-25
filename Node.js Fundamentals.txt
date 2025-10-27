@@ -1,0 +1,134 @@
+											Node.js Fundamentals
+
+What is Node.js?
+ Node.js is platform(runtime and set of apis and tools), to run js code.
+ Node.js is JavaScript runtime.
+
+Runtime:
+ To execute compiled intermediate code into machine code
+
+How js code is compiled and executed?
+
+Hello.java (source code)--->javac(compiler)---->Hello.class(bytecode)---->java---Executed on JRE
+
+Program:
+  1.source code 
+     Hello.java
+  2.compiled code
+     Hello.class
+
+Flow:
+   source-compiled code- execute the code
+   source code - compiler--- compiled code --->Runtime
+
+Does js code is compiled or not?
+
+yes
+
+Types of js runtime.
+
+1.browser js 
+2.desktop js -node.js
+3.others - Mobile
+
+		js runtime works based on ECMA Spec(js lang spec)
+
+Why js was created?
+  For building dynamic web apps at client side -DOM programming
+
+Why Node.js?
+           Node .js created to build "non blocking io applications" on JavaScript
+
+What is io?
+What is blocking ?
+What is non blocking ?
+
+File Descriptor:
+
+Program - api - high level 
+ |       
+ Runtime
+os ------api ---low level -system call
+  ------ User space
+ | -----Kernal space - File descriptor (Program which is responsible for io)
+    
+hardware
+
+
+File descriptor:
+ It is program, written c language - c program
+ C program has an array
+
+Non blocking apis in Linux:
+
+1.select + read
+2.poll
+3.epoll - event driven architecture
+
+Nginx was the first non blocking web server.
+
+In 2007,Ryan Dahl, who developed an architecture called "Node.js" based on js language.
+
+google released js runtime called v8 as open source, based on v8, node.js was created
+
+Node .js created to build non blocking io applications on JavaScript
+
+What is io?
+What is blocking ?
+What is non blocking ?
+
+File Descriptor:
+
+Program - api - high level 
+ |       
+ Runtime
+os ------api ---low level -system call
+  ------ User space
+ | -----Kernal space - File descriptor (Program which is responsible for io)
+    
+hardware
+
+
+File descriptor:
+ It is program, written c language - c program
+ C program has an array
+
+Non blocking apis in Linux:
+
+1.select + read
+2.poll
+3.epoll - event driven architecture
+
+
+Nginx was the first non blocking web server.
+
+In 2007,Ryan Dahl, who developed an architecture called "Node.js" based on js language.
+
+google released js runtime called v8 as open source, based on v8, node.js was created
+
+
+Libuv offers
+
+1.OS abstraction apis
+2.Threads
+  Libuv has two types of threads
+ 1.Event loop thread - non blocking io thread
+    It has only one event loop thread
+    ->handles network io operations - webservers, tcp servers, datagram servers
+ 2.Worker pool thread - blocking io and tasks
+    ->handles file io operations both non blocking and blocking
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
