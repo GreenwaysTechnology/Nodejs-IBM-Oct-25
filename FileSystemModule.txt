@@ -407,3 +407,97 @@ function main(){
     write()
 }
 main()
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+										Back pressure
+*******************************************************************************************************************************************************
+Backpressure is a mechanism for controlling data flow between a fast producer (reading file) and slow consumer( writing to a network,file or any stream).
+ Problems when you do read and write together
+
+1. In general read operation is faster than write operation
+
+			Back Pressure means inputstream is fast, outputstream slow, then data will be lost.
+
+Without Back Pressure Handling
+
+1.Producer sends data too fast
+2.The consumer cant process it quickly enough
+3.Memory fills up - > crash or degraded performance
+
+With Back Pressure Handling
+- The producer pauses when the consumer internal buffer is full
+->it resumes when the consumer is ready again
+
+How to handle back pressure?
+
+ apis  : pause ,resume, drain event
+pause : to close the upstream, not to emit data
+resume : to open the open upstream , to emit data
+drain event: if drain event is called, means buffer is empty
+
+Before Testing BackPressure , we need bigFile
+
+//big file creation
+const fs = require('node:fs');
+const path = require('node:path')
+
+const filePath = path.join(__dirname, "assets/big.file")
+
+const file = fs.createWriteStream(filePath);
+
+for (let i = 0; i <= 1e6; i++) {
+    file.write('Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n');
+}
+
+How to handle back pressure using pause,resume,drain?
+
+const fs = require('node:fs');
+const path = require('node:path');
+
+const inputfileName = path.join(__dirname, 'assets/big.file');
+const outputfileName = path.join(__dirname, 'assets/bigcopy.file');
+
+const config = {
+    encoding: 'UTF-8'
+}
+const readerStream = fs.createReadStream(inputfileName, config);
+const writeStr = fs.createWriteStream(outputfileName, config);
+
+readerStream.on('data', function (chunk) {
+    console.log(`Received ${chunk.length} bytes of data.`);
+    let buffer_good = writeStr.write(chunk);
+    if (!buffer_good) readerStream.pause();
+});
+writeStr.on('drain', function () {
+    console.log('buffer drained!');
+    readerStream.resume();
+});
+readerStream.on('end', function () {
+    // console.log(data);
+});
+
+readerStream.on('error', function (err) {
+    console.log(err.stack);
+});	
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+									Backpressure Handling using pipe
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+Pipe method to eliminate backpressure apis(drain,resume,pause)
+const fs = require('node:fs');
+const path = require('node:path');
+
+const inputfileName = path.join(__dirname, 'assets/big.file');
+//write
+const outputFileName = path.join(__dirname, 'assets/bigcopy.file');
+
+const config = {
+      encoding: 'UTF-8'
+}
+
+//Back pressure handling
+const readerStream = fs.createReadStream(inputfileName, config);
+const writeStr = fs.createWriteStream(outputFileName, config);
+
+//backPressure streams
+//pipe method is simplest method which wraps resume,pasuse,drain 
+readerStream.pipe(writeStr);
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&

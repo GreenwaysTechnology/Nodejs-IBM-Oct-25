@@ -1,28 +1,18 @@
-const fs = require('node:fs')
-const path = require('node:path')
+const fs = require('node:fs');
+const path = require('node:path');
 
-function write() {
-    let filePath = path.join(__dirname, 'assets/todos.json')
-    const config = {
-        encoding: 'utf8',
-        flag: 'w'
-    };
-    const outputStream = fs.createWriteStream(filePath, config)
-    //data
-    const todos = [{ text: 'learn Js', status: 'completed' }, { text: 'learn node', status: 'in Progress' }]
-    let jsonTodos = JSON.stringify(todos)
+const inputfileName = path.join(__dirname, 'assets/big.file');
+//write
+const outputFileName = path.join(__dirname, 'assets/bigcopy.file');
 
-
-    outputStream.write(jsonTodos)
-    //attach events
-    outputStream.close();
-
-    outputStream.on('close', function () {
-        console.log('file has been written ')
-    })
-
+const config = {
+      encoding: 'UTF-8'
 }
-function main(){
-    write()
-}
-main()
+
+//Back pressure handling
+const readerStream = fs.createReadStream(inputfileName, config);
+const writeStr = fs.createWriteStream(outputFileName, config);
+
+//backPressure streams
+//pipe method is simplest method which wraps resume,pasuse,drain 
+readerStream.pipe(writeStr);
