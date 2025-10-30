@@ -223,3 +223,122 @@ app.delete('/api/users', (req, res) => {
 const server = app.listen(PORT, () => {
     console.log(`Express server is Running at ${server.address().port}`)
 })
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+									Service layer, controller, promise
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+const express = require('express')
+const { findAll } = require('./services/user.service')
+
+const PORT = 3000
+const app = express()
+
+//expose apis
+//get ===HTTP GET Verb
+app.get('/', (req, res) => {
+    res.end('Hello Express')
+})
+
+//Resource:USERs
+app.get('/api/users', async (req, res) => {
+    try {
+        const users = await findAll()
+        res.json(users)
+    }
+    catch (err) {
+        console.log(err)
+    }
+})
+app.post('/api/users', (req, res) => {
+    res.end('USERS POST')
+})
+app.put('/api/users', (req, res) => {
+    res.end('USERS PUT')
+})
+app.delete('/api/users', (req, res) => {
+    res.end('USERS DELETE')
+})
+
+//start server
+const server = app.listen(PORT, () => {
+    console.log(`Express server is Running at ${server.address().port}`)
+})
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+									Routers
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+src/routers/user.router.js
+const express = require('express')
+const { findAll } = require('../services/user.service')
+
+const userRouter = express.Router()
+
+userRouter.get('/', async (req, res) => {
+    try {
+        const users = await findAll()
+        res.json(users)
+    }
+    catch (err) {
+        console.log(err)
+    }
+})
+
+
+module.exports = userRouter;
+
+
+src/routers/post.router.js
+const express = require('express')
+
+const postRouter = express.Router()
+
+postRouter.get('/', async (req, res) => {
+    try {
+        res.json({message:'Post Router'})
+    }
+    catch (err) {
+        console.log(err)
+    }
+})
+
+
+module.exports = postRouter;
+
+src/routers/comments.router.js
+const express = require('express')
+
+const commentsRouter = express.Router()
+
+commentsRouter.get('/', async (req, res) => {
+    try {
+        res.json({message:'Comments Router'})
+    }
+    catch (err) {
+        console.log(err)
+    }
+})
+
+
+module.exports = commentsRouter;
+
+src/app.js
+const express = require('express')
+//const userRouter = require('./routers/user.router')
+const PORT = 3000
+const app = express()
+
+//bind Routers with application object, so that application can redirect to routers
+// app.use('/api/users',userRouter)
+app.use('/api/users', require('./routers/user.router'))
+app.use('/api/posts', require('./routers/post.router'))
+app.use('/api/comments', require('./routers/comments.router'))
+
+//expose apis
+//get ===HTTP GET Verb
+app.get('/', (req, res) => {
+    res.end('Hello Express')
+})
+
+//start server
+const server = app.listen(PORT, () => {
+    console.log(`Express server is Running at ${server.address().port}`)
+})

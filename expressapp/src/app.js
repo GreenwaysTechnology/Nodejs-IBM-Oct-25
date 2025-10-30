@@ -2,46 +2,22 @@ const express = require('express')
 const app = express()
 
 const PORT = 3000
+//configure routers
+// app.use('/api/books', require('./routers/books/router'))
+//since books folder, file name is index.js  which is resolved by default
+app.use('/api/books', require('./routers/books'))
+// app.use('/api/students', require('./routers/students/router'))
+app.use('/api/students', require('./routers/students'))
 
-//mock data 
-const books = [
-    {
-        id: 1, title: 'Node.js Design Patterns', author: 'Mario Casciaro', year: '2014'
-    },
-    {
-        id: 1, title: 'Beginning Node.js, Express & MongoDB Development', author: 'GREG. LIM', year: '2019'
-    }
-]
+// app.use('/api/students')
 //apis
 app.get('/', (req, res) => {
     res.end('Welcome to App!')
 })
-//books api
-app.get('/api/books', (req, res) => {
-    res.json(books)
-})
-app.post('/api/books', (req, res) => {
-    let book = ''
-    req.on('data', (chunk) => {
-        book += chunk
-    })
-    req.on('end', () => {
-        const tmpbook = JSON.parse(book)
-        const newBook = {
-            id: books.length + 1,
-            title: tmpbook.title,
-            author: tmpbook.author,
-            year: tmpbook.year
-        }
-        books.push(newBook)
-        res.json(newBook)
-    })
-})
-app.put('/api/books', (req, res) => {
-    res.json({ message: 'books put api still in progress' })
-})
-app.delete('/api/books', (req, res) => {
-    res.json({ message: 'books delete api still in progress' })
+
+///Students Api
+app.get('/api/students', (req, res) => {
+    res.end('students')
 })
 //start server
 const server = app.listen(PORT, () => {
