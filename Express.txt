@@ -342,3 +342,344 @@ app.get('/', (req, res) => {
 const server = app.listen(PORT, () => {
     console.log(`Express server is Running at ${server.address().port}`)
 })
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+										  Express middlewares
+.......................................................................................................................................................................................................................................
+What is Middleware?
+       Middleware is JavaScript function that have access request object and response and next function in the application request response              cycle.
+ The difference between normal function which handles req and response with express , middleware takes third arg
+
+normal function
+ app.get('url',(req,res)=>{})
+
+Middleware function
+  app.get('url',(req,res,next)=>{
+       //pre and post processing
+  })
+ req and res are objects
+ next is a function
+
+The "next" function is a function in the express router which,when invoked,executes the middleware succeeding the current middleware.
+
+
+Tasks are middleware is doing:
+
+1.Execute any code
+2.Make changes to request and response object before handling real req and res cycle.
+3.Middlwares can be attached on application object and also router object
+
+use Method
+  use method is used to registry middleware.
+
+app.use
+router.use
+
+app.use('/api/users', require('./routers/users/user.router'))
+ In this code we have registered already middleware which is called as "routerMidleware" - Router itself is middleware.
+
+How to write our own middleware? - Custom Middleware.
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+Use case: Simple Middleware
+const express = require('express')
+const PORT = 3000
+const app = express()
+
+//middlewares
+app.use(function (req, res, next) {
+    console.log('Middleware')
+    //chain the middleware: move to next
+    next()
+})
+
+
+app.get('/', (req, res) => {
+    res.end('Hello Express')
+})
+
+
+//start server
+app.listen(PORT, () => {
+    console.log(`Express server is Running at ${PORT}`)
+})
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+Use case :Multiple Middlewares
+const express = require('express')
+const PORT = 3000
+const app = express()
+
+//middlewares
+app.use(function (req, res, next) {
+    console.log('M1')
+    //chain the middleware: move to next
+    next()
+})
+app.use(function (req, res, next) {
+    console.log('M2')
+    //chain the middleware: move to next
+    next()
+})
+app.use(function (req, res, next) {
+    console.log('M3')
+    //chain the middleware: move to next
+    next()
+})
+
+
+app.get('/', (req, res) => {
+    res.end('Hello Express')
+})
+
+
+//start server
+app.listen(PORT, () => {
+    console.log(`Express server is Running at ${PORT}`)
+})
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+Use case : Add some custom Header
+const express = require('express')
+const PORT = 3000
+const app = express()
+
+//middlewares
+app.use(function (req, res, next) {
+    //custom header
+    res.set("message", "Hello")
+    //chain the middleware: move to next
+    next()
+})
+app.use(function (req, res, next) {
+    res.set("name", "Subramanian")
+
+    console.log('M2')
+    //chain the middleware: move to next
+    next()
+})
+app.use(function (req, res, next) {
+    res.set("company", "IBM")
+
+    console.log('M3')
+    //chain the middleware: move to next
+    next()
+})
+
+
+app.get('/', (req, res) => {
+    res.end('Hello Express')
+})
+
+
+//start server
+app.listen(PORT, () => {
+    console.log(`Express server is Running at ${PORT}`)
+})
+*********************************************************************************************************************************************************
+											Middleware for specific URL
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+const express = require('express')
+const PORT = 3000
+const app = express()
+
+//url specific middleware
+app.use('/api/hello', (req, res, next) => {
+    res.set('hello', 'helloapi')
+    next()
+})
+
+app.get('/', (req, res) => {
+    res.end('Hello Express')
+})
+
+app.get('/api/hello', (req, res) => {
+    res.end('Hello-GET')
+})
+app.post('/api/hello', (req, res) => {
+    res.end('Hello-POST')
+})
+app.put('/api/hello', (req, res) => {
+    res.end('Hello-Put')
+})
+app.delete('/api/hello', (req, res) => {
+    res.end('Hello-Delete')
+})
+
+app.get('/api/hai', (req, res) => {
+    res.end('hai-GET')
+})
+//start server
+app.listen(PORT, () => {
+    console.log(`Express server is Running at ${PORT}`)
+})
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+							        URL and specific method
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+const express = require('express')
+const PORT = 3000
+const app = express()
+
+//url specific middleware
+app.get('/api/hello', (req, res, next) => {
+    res.set('hello', 'this is get method')
+    next()
+})
+
+app.get('/', (req, res) => {
+    res.end('Hello Express')
+})
+
+app.get('/api/hello', (req, res) => {
+    res.end('Hello-GET')
+})
+app.post('/api/hello', (req, res) => {
+    res.end('Hello-POST')
+})
+app.put('/api/hello', (req, res) => {
+    res.end('Hello-Put')
+})
+app.delete('/api/hello', (req, res) => {
+    res.end('Hello-Delete')
+})
+
+app.get('/api/hai', (req, res) => {
+    res.end('hai-GET')
+})
+//start server
+app.listen(PORT, () => {
+    console.log(`Express server is Running at ${PORT}`)
+})
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+								   Routers and middlewares
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+const express = require('express')
+const PORT = 3000
+const app = express()
+//router
+const userRouter = express.Router()
+app.use('/api/users', userRouter)
+
+//userRouter
+// userRouter.use(function (req, res, next) {
+//     console.log('User Router')
+//     res.set('user', 'this is user Router')
+//     next()
+// })
+// userRouter.use('/', function (req, res, next) {
+//     console.log('User Router')
+//     res.set('user', 'this is user Router')
+//     next()
+// })
+userRouter.get('/api/users', function (req, res, next) {
+    console.log('User Router')
+    res.set('user', 'this is user Router')
+    next()
+})
+userRouter.get('/', (req, res) => {
+    res.send('User router')
+})
+userRouter.get('/:id', (req, res) => {
+    res.send('User router details')
+})
+
+
+//start server
+app.listen(PORT, () => {
+    console.log(`Express server is Running at ${PORT}`)
+})
+.........................................................................................................................................................................................................................................
+		 				 	Can we pass parameters to the Middleware so that we can 
+		     					configure middleware - Configurable Middlewares
+.......................................................................................................................................................................................................................................
+
+Middleware which takes parameter , it should be higher order function. - function should return another function.
+
+inner function is middleware.
+
+Syntax: without explicit parameter
+
+app.use(function(req,res,next)=>{})
+
+Syntax: with explicit paramter
+
+const mymiddleware = function(param) {
+
+  return function(req,res,next){
+     //access param
+
+    next()
+  }
+}
+app.use(mymiddleware('param'))
+
+const express = require('express')
+const PORT = 3000
+const app = express()
+
+//parametermized middleware
+const middleware = function (param) {
+    return function (req, res, next) {
+        //middleware logic
+        console.log(param)
+        next()
+    }
+}
+app.use(middleware('hello'))
+
+app.get('/', (req, res) => {
+    res.send('Home')
+})
+
+//start server
+app.listen(PORT, () => {
+    console.log(`Express server is Running at ${PORT}`)
+})
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+Use case:
+I want to log every request into a file- building logger using middleware
+
+const express = require('express')
+const PORT = 3000
+const app = express()
+const fs = require('node:fs')
+const path = require('node:path')
+
+function fileLoggerMiddleware(req, res, next) {
+    const logFormat = `[${new Date().toISOString()}] - ${req.method} - ${req.url}\n`
+    fs.appendFileSync(path.join(__dirname, 'access.log'), logFormat)
+    next()
+}
+app.use(fileLoggerMiddleware)
+
+app.get('/', (req, res) => {
+    res.send('Home')
+})
+app.get('/api/hello', (req, res) => {
+    res.send('Hello')
+})
+app.get('/api/users', (req, res) => {
+    res.send('Users')
+})
+app.post('/api/products', (req, res) => {
+    res.send('products')
+})
+//start server
+app.listen(PORT, () => {
+    console.log(`Express server is Running at ${PORT}`)
+})
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+									Types of Middlewares
+...........................................................................................................................................................................................................................................
+1.Application middleware
+2.Router level middleware
+3.Error handling middleware
+4.Third party middleware
+
+1.Application middleware:
+  Middleware is attached on application object
+
+2.Router level middleware
+->writing router:
+ In express except ,request and response , all features including router is middleware.
+ Router is in built middleware.

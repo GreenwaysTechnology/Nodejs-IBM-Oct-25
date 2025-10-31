@@ -10,6 +10,20 @@ const books = [
         id: 2, title: 'Beginning Node.js, Express & MongoDB Development', author: 'GREG. LIM', year: '2019'
     }
 ]
+//booksRouter middlewares
+booksRouter.use((req,res,next)=>{
+    console.log('Books Router')
+    next()
+})
+
+booksRouter.use('/:id',(req,res,next)=>{
+    console.log('Books ById Router')
+    next()
+})
+booksRouter.post('/',(req,res,next)=>{
+    console.log('Books Post Router')
+    next()
+})
 //api
 booksRouter.get('/', async (req, res) => {
     const books = await findAll()

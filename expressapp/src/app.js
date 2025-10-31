@@ -1,26 +1,29 @@
 const express = require('express')
-const app = express()
-
 const PORT = 3000
-//configure routers
-// app.use('/api/books', require('./routers/books/router'))
-//since books folder, file name is index.js  which is resolved by default
-app.use('/api/books', require('./routers/books'))
-// app.use('/api/students', require('./routers/students/router'))
-app.use('/api/students', require('./routers/students'))
+const app = express()
+const fs = require('node:fs')
+const path = require('node:path')
 
-// app.use('/api/students')
-//apis
+function fileLoggerMiddleware(req, res, next) {
+    const logFormat = `[${new Date().toISOString()}] - ${req.method} - ${req.url}\n`
+    fs.appendFileSync(path.join(__dirname, 'access.log'), logFormat)
+    next()
+}
+app.use(fileLoggerMiddleware)
+
 app.get('/', (req, res) => {
-    res.end('Welcome to App!')
+    res.send('Home')
 })
-
-///Students Api
-app.get('/api/students', (req, res) => {
-    res.end('students')
+app.get('/api/hello', (req, res) => {
+    res.send('Hello')
+})
+app.get('/api/users', (req, res) => {
+    res.send('Users')
+})
+app.post('/api/products', (req, res) => {
+    res.send('products')
 })
 //start server
-const server = app.listen(PORT, () => {
-    console.log(`Express server is ready! at ${server.address().port}`)
+app.listen(PORT, () => {
+    console.log(`Express server is Running at ${PORT}`)
 })
-//server properties
