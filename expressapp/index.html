@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        async function getProducts() {
+            const res = await fetch('http://localhost:3000/products/1')
+            const result = await res.json()
+            console.log(result)
+        }
+        async function getCustomer() {
+            const res = await fetch('http://localhost:3000/customers/1')
+            const result = await res.json()
+            console.log(result)
+        }
+        getProducts()
+        getCustomer()
+
+        async function postProducts() {
+            const res = await fetch('http://localhost:3000/products/1', {
+                method: 'POST'
+            })
+            const result = await res.json()
+            console.log('post')
+        }
+        postProducts()
+    </script>
+</body>
+
+</html>

@@ -4,3 +4,9 @@
 [2025-10-31T04:58:02.068Z] - POST - /api/hello
 [2025-10-31T04:58:30.317Z] - POST - /api/users
 [2025-10-31T04:58:36.284Z] - GET - /api/users
+::1 - - [31/Oct/2025:06:53:22 +0000] "GET /api/books HTTP/1.1" 200 187 "-" "PostmanRuntime/7.49.0"
+::1 - - [31/Oct/2025:06:53:46 +0000] "GET /api/books HTTP/1.1" 200 187 "-" "PostmanRuntime/7.49.0"
+::1 - - [31/Oct/2025:06:54:49 +0000] "GET / HTTP/1.1" 200 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+::1 - - [31/Oct/2025:07:02:04 +0000] "GET / HTTP/1.1" 200 309 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+::1 - - [31/Oct/2025:07:02:12 +0000] "GET / HTTP/1.1" 304 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"
+::1 - - [31/Oct/2025:07:02:12 +0000] "GET / HTTP/1.1" 304 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36"

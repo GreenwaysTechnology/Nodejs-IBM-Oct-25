@@ -6,15 +6,20 @@ const path = require('node:path')
 
 const PORT = 3000
 
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
 app.use(morgan('dev'))
+
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
+
 app.use(morgan('combined', { stream: accessLogStream }))
-app.use(express.static(path.join(__dirname, "public")))
+
 
 app.use('/api/books', require('./routers/books'))
 app.use('/api/students', require('./routers/students'))
 
 
+app.get('/', (req, res) => {
+    res.end('Welcome to App!')
+})
 
 ///Students Api
 app.get('/api/students', (req, res) => {
