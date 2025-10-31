@@ -3,9 +3,8 @@ const app = express()
 const morgan = require('morgan')
 const fs = require('node:fs')
 const path = require('node:path')
-require('dotenv').config()
 
-const PORT = process.env.PORT || 3000
+const PORT = 3000
 
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
 app.use(morgan('dev'))

@@ -1157,4 +1157,102 @@ const server = app.listen(PORT, () => {
     console.log(`Express server is ready! at ${server.address().port}`)
 })
 //server properties
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+										Externalization of config information
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
+Some of the information should be externalized like PORT, Database connections ,user names, password.
+
+npm install dotenv --save
+
+
+express-app(project dir)
+ |
+.env
+	PORT=3000
+
+app.js
+const express = require('express')
+const app = express()
+const fs = require('node:fs')
+const path = require('node:path')
+const morgan = require('morgan')
+//configure .env file into code
+// const dotenv = require('dotenv')
+// dotenv.config()
+require('dotenv').config()
+
+//here we read PORT From enviroment, before that we need to set
+const PORT = process.env.PORT || 3000
+
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
+app.use(morgan('combined', { stream: accessLogStream }))
+
+
+app.get('/api/greet', (req, res) => {
+    res.send('Hello')
+})
+
+//start server
+const server = app.listen(PORT, () => {
+    console.log(server.address())
+    console.log(`Express is running @ ${server.address().port}`)
+})
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+										 Data base Integration
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+ 
+Now a days data storage is basically classified into two category.
+
+1.SQL Based
+2.No SQL Based
+  1.Key-value pair
+  2.Document based 
+  3.column based
+  4.graph based
+
+Products 
+1.SQL
+  Oracle
+  Microsoft SQL server
+  MySQL
+  DB2
+  Postgress 
+  MariaDB
+ etc...
+
+2.NoSQL
+ 1.Key-value pair
+    Redis
+ 2.Document oriented
+   Mongodb
+ 3.Column based
+   Aws dynamo 
+ 4.Graph based
+     neo4j
+
+Note:
+ From node.js(express) , we can connect and work with all databases, if there is drivers and apis for those databases
+
+In order to connect with databases, application frameworks offers the frameworks which makes code more simple and abstract database operations
+
+Mongodb frameworks: 
+ ODM - Object Document Modeling framework 
+
+Basic Requirements:
+
+1.You need mongodb installed in your local machine
+
+Note: Nobody is installing mongodb /any database locally.
+
+Ways of using mongo(any database)
+
+1.Via docker / PodMan
+2.You can use free cloud account for testing
+
+
+Code:
+
+.env
+PORT=3000
+DATABASE_URL=mongodb+srv://subugee:subugee222@cluster0.shfpbhv.mongodb.net/myDatabase?retryWrites=true&w=majority&appName=Cluster0
