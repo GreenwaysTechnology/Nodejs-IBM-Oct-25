@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "moleculer-repl": "^0.7.4"
+  },
+  "dependencies": {
+    "moleculer": "^0.14.35"
+  }
+}

@@ -378,3 +378,146 @@ async function main() {
     }
 }
 main()
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+						  Dynamic params and Dynamic invocation services
+..........................................................................................................................................................................................................................................
+
+Moleculer has a tool called "Moleculer REPL"
+
+>npm install moleculer-repl --save-dev
+
+
+const { ServiceBroker } = require('moleculer')
+const broker = new ServiceBroker()
+
+broker.createService({
+    name: "math",
+    actions: {
+        add: {
+            //meta information
+            params: {
+                a: { type: "number", positive: true, integer: true, default: 0 },
+                b: { type: "number", positive: true, integer: true, default: 0 }
+            },
+            handler(ctx) {
+                const { a, b } = ctx.params
+                return a + b
+            }
+        }
+    }
+})
+
+async function main() {
+    try {
+        await broker.start()
+        //will start interactive commandline tool
+        broker.repl()
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+main()
+
+Testing:
+mol $ call math.add --a 45 --b 30
+>> Call 'math.add' with params: { a: 45, b: 30 } with meta: { '$repl': true }
+>> Execution time:550μs
+>> Response:
+75
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+										   Service Communications
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+Service Representation:
+1.RPI
+  -REST,Graphql
+  -Grpc
+  -Thirft
+  -TCP
+2.Messaging 
+  -RabbitMQ
+  -Kafka
+
+RPI
+ Rest to Rest Communication
+ Rest to TCP/non Rest communication.
+
+Moleculr supports all types of communications
+
+1.NonRest to NonRest Communication - BackEndService to BackEndService
+
+Moleculer is microservice, generally microservices may be distributed across multiple machines(nodes) , which communicates via networks.
+
+Service Types:
+	Services are classified based on communication
+
+1.Service communication with in single broker - local services
+2.Service communication across multiple service brokers -remote services
+
+Communication style
+
+1. can be sync
+2. can be async
+
+How services are interacting each other?
+
+ Using "Context" Object
+
+Actors:
+
+ 1.Caller service, who is calling /consuming other services
+
+ 2.Callee service, who is called by others
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+						Use case: RPC TO RPC , within single Broker(Single Node)
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+Local Service Communication:
+
+const { ServiceBroker } = require('moleculer')
+const broker = new ServiceBroker()
+
+broker.createService({
+    name: 'calculator',
+    actions: {
+        add: {
+            handler(ctx) {
+                const { a, b } = ctx.params
+                return `From Calculator ${a + b}`
+            }
+        }
+    }
+})
+
+
+
+broker.createService({
+    name: "math",
+    actions: {
+        add: {
+            //meta information
+            params: {
+                a: { type: "number", positive: true, integer: true, default: 0 },
+                b: { type: "number", positive: true, integer: true, default: 0 }
+            },
+            handler(ctx) {
+                const { a, b } = ctx.params
+                const response = ctx.call('calculator.add', { a, b })
+                return response
+            }
+        }
+    }
+})
+
+async function main() {
+    try {
+        await broker.start()
+        //will start interactive commandline tool
+        broker.repl()
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+main()
