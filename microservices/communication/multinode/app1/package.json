@@ -11,7 +11,8 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "moleculer": "^0.14.35"
+    "moleculer": "^0.14.35",
+    "nats": "^2.29.3"
   },
   "devDependencies": {
     "moleculer-repl": "^0.7.4"

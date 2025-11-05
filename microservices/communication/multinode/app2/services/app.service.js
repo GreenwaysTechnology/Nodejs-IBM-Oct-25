@@ -1,5 +1,9 @@
 const { ServiceBroker } = require('moleculer')
-const broker = new ServiceBroker()
+const broker = new ServiceBroker({
+    // transporter: "TCP"
+     transporter:"nats://localhost:4222"
+
+})
 
 broker.createService({
     name: "math",
@@ -11,7 +15,8 @@ broker.createService({
                 b: { type: "number", positive: true, integer: true, default: 0 }
             },
             handler(ctx) {
-
+                const { a, b } = ctx.params
+                return `${a + b} from ${broker.nodeID}`
             }
         }
     }
