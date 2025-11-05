@@ -8,8 +8,8 @@ broker.createService({
     name: "products",
     actions: {
         //here we write biz logic
-        async findAll(ctx) {
-            return await ctx.call('inventory.findAll')
+        findAll(ctx) {
+            return ctx.call('inventory.findAll')
         }
     }
 })
@@ -17,15 +17,12 @@ broker.createService({
     name: "inventory",
     actions: {
         findAll() {
-            const products = [{
+            return [{
                 id: 1,
                 name: 'Iphone',
                 qty: 100,
                 price: 1000
             }]
-            return new this.Promise((resolve, reject) => {
-                setTimeout(resolve, 1000, products)
-            })
         }
     }
 })

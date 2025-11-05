@@ -1,4 +1,5 @@
 const { ServiceBroker } = require('moleculer')
+
 const broker = new ServiceBroker({
     // transporter: "TCP"
     transporter: "nats://localhost:4222"
@@ -6,15 +7,16 @@ const broker = new ServiceBroker({
 })
 
 broker.createService({
-    name: "inventory",
-    events: {
-        'order.created': {
-            handler(ctx) {
-                console.log(ctx.params)
+    name: 'calculator',
+    actions: {
+        add: {
+            async handler(ctx) {
+                const { a, b } = ctx.params
+                const result = await ctx.call('math.add', { a, b })
+                return `Result is ${result} and invoked from ${broker.nodeID}`
             }
         }
     }
-
 })
 
 
