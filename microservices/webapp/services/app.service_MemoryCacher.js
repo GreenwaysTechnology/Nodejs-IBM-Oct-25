@@ -2,7 +2,7 @@ const { ServiceBroker } = require('moleculer')
 
 const broker = new ServiceBroker({
     logger: "Console",
-    cacher: "redis://localhost:6379"
+    cacher: "Memory"
 })
 
 broker.createService({

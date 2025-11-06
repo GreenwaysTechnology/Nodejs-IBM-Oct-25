@@ -1,15 +1,13 @@
 const { ServiceBroker } = require('moleculer')
 
 const broker = new ServiceBroker({
-    logger: "Console",
-    cacher: "redis://localhost:6379"
+    logger: "Console"
 })
 
 broker.createService({
     name: 'user',
     actions: {
         list: {
-            cache: true,
             handler(ctx) {
                 this.logger.info('handler is called')
                 return [{
