@@ -18,7 +18,7 @@ broker.createService({
     mixins: [DbService],
     adapter: new MongooseAdapter(DATABASE_URL),
     model: mongoose.model('Post', mongoose.Schema({
-       
+
         title: {
             type: String
         },
@@ -66,12 +66,35 @@ broker.createService({
             async handler(ctx) {
                 const id = ctx.params.id
                 console.log(id)
-                const post = await ctx.call('postDb.find', { _id: id })
-                // console.log(post)
+                const post = await ctx.call('postDb.find', { query: { _id: id } });
                 return post
             }
-        }
+        },
         //TASK ADD UPDATE, DELETE code
+        remove: {
+            rest: 'DELETE /:id',
+            async handler(ctx) {
+                const id = ctx.params.id;
+                // Call the postDb remove action to delete the document by ID
+                const res = await ctx.call('postDb.remove', { id });
+                return res;
+            }
+        },
+        update: {
+            rest: "PUT /:id",
+            async handler(ctx) {
+                const id = ctx.params.id
+                const { title, content } = ctx.params
+                const res = await ctx.call("postDb.update", {
+                    id: id,
+                    title: title,
+                    content: content
+                })
+                return res
+            }
+        }
+
+
     }
 })
 
