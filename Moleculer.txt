@@ -2416,7 +2416,179 @@ main()
 Task:
   Try with Prisma with any database(SQLlite)
 setup:  
- Follow express tutorial for setting up prisma.
+ Follow express tutorial for setting up Prisma.
 &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-  
+  					&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+											Microservices Advanced Design patterns
+************************************************************************************************************************************************************
+											  Service Discovery and Registry
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+Service Registry configuration:
+{
+    registry: {
+        discoverer: "Local"
+    }    
+}
+
+Moleculer provides built in service registry, we can use that by default.
+by Default Moleculer has built in registry, whether you communicate local service or remote services, all services gets registered(self registration)
+
+
+Redis:
+docker run --name redis-server -p 6379:6379 redis
+
+const { ServiceBroker } = require('moleculer')
+
+const broker = new ServiceBroker({
+    registry: {
+        discoverer: 'Local'
+        //  discoverer: "redis://localhost:6379"
+    }
+})
+
+
+broker.createService({
+    name: "math",
+    actions: {
+        add: {
+            //meta information
+            params: {
+                a: { type: "number", positive: true, integer: true, default: 0 },
+                b: { type: "number", positive: true, integer: true, default: 0 }
+            },
+            handler(ctx) {
+                const { a, b } = ctx.params
+                const response = ctx.call('calculator.add', { a, b })
+                return response
+            }
+        }
+    }
+})
+
+async function main() {
+    try {
+        await broker.start()
+        //will start interactive commandline tool
+        broker.repl()
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+main()
+...................................................................................................................................................................................................................................
+									High Availability and Scalability 
+										 Load Balancing
+..................................................................................................................................................................................................................................
+			   	
+ 	 				 				 Load Balancing
+
+In Server-side load balancing, the instances of the service are deployed on multiple servers and then a load balancer is put in front of them. It is generally a hardware load balancer. All the incoming requests traffic firstly comes to this load balancer acting as a middle component. It then decides to which server a particular request must be directed to based on some algorithm.
+
+Disadvantages of Server-side load balancing:
+
+Server side load balancer acts as a single point of failure as if it fails, all the instances of the microservice becomes inaccessible as only load balancer has the list of servers.
+
+Since each microservice will have a separate load balancer, the overall complexity of the system increases and it becomes hard to manage.
+
+The network latency increases as the number of hops for the request increases from one to two with the load balancer, one to the load balancer and then another from load balancer to the microservice.
+
+
+2. Client-side Load Balancing
+
+The instances of the service are deployed on multiple servers. Load balancer's logic is part of the client itself, it holds the list of servers and decides to which server a particular request must be directed to based on some algorithm. These client side load balancers are also known as software load balancers.
+
+Disadvantages of Client-side load balancing
+The load balancer's logic is mixed up with the microservice code.
+
+
+............................
+
+Server side Load balancer is very usefull to manage trafic from outside applications.
+Mobile clients and webclients trafic easily can be managed.
+
+Client side load balancers are very usefull to mangae trafic inside microservice application.
+
+
+Why we need load balancer?
+
+1. To scale services instances
+ A single service may not sufficient to handle multiple concurrent request.
+
+How to select which service instance to be assigned to caller(client), 
+
+   With help of Load Balancer.
+
+Load Balancer balances incomming load and route according to "router algorthims" provided by load balancers.
+
+
+Built-in strategies
+
+ ->RoundRobin strategy
+	This strategy selects a node based on round-robin algorithm.
+   Refer:https://en.wikipedia.org/wiki/Round-robin_DNS
+ ->Random strategy
+	This strategy selects a node randomly.
+ ->CPU usage-based strategy
+	This strategy selects a node which has the lowest CPU usage. Due to the node list can 	be very long, it gets samples and selects the node with the lowest CPU usage from only 	samples instead of the whole node list.
+
+ ->Latency-based strategy
+	This strategy selects a node which has the lowest latency, measured by periodic ping commands. Notice that the strategy only ping one of nodes from a single host.
+
+In Moleculer load balancers are built in, part of Registry , which is part of broker.
+
+Moleculer loader balancer by default uses RoundRobin algorthim, if you want to change different one, you can override
+
+ registry: {
+        strategy: "Latency",
+        strategyOptions: {
+            sampleCount: 15,
+            lowLatency: 20,
+            collectCount: 10,
+            pingInterval: 15
+        }
+    }
+
+In Moleculer load balancers are built in, part of Registry , which is part of broker.
+
+Moleculer loader balancer by default uses RoundRobin algorthim, if you want to change different one, you can override
+
+ registry: {
+        strategy: "Latency",
+        strategyOptions: {
+            sampleCount: 15,
+            lowLatency: 20,
+            collectCount: 10,
+            pingInterval: 15
+        }
+    }
+
+How to implement load balancing?
+
+1.You need to clone the services n- number of times.
+  lets say i have service called "adder" service , i need to run adder service 2 instances
+
+2.Each service is going to run in different nodes. Each node must be identified quickly.
+  Node name should not be hardcoded.
+  In Genernal Node Id would be  - computername_processId
+
+How to test ?
+
+Open 3 cmd 
+PS G:\IBM\2024\May\Nodejs\microservices\loadbalancing\add-service> node services/add.service.js
+
+PS G:\IBM\2024\May\Nodejs\microservices\loadbalancing\add-service> node services/add.service.js
+PS G:\IBM\2024\May\Nodejs\microservices\loadbalancing\add-service> node services/add.service.js
+
+
+
+How to implement load balancing?
+
+1.You need to clone the services n- number of times.
+  lets say i have service called "adder" service , i need to run adder service 2 instances
+
+2.Each service is going to run in different nodes. Each node must be identified quickly.
+  Node name should not be hardcoded.
+  In Genernal Node Id would be  - computername_processId		
 
