@@ -2592,3 +2592,26 @@ How to implement load balancing?
   Node name should not be hardcoded.
   In Genernal Node Id would be  - computername_processId		
 
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+			Moleculer cli and Moleculer Runner
+....................................................................................
+
+Moleculer Runner
+ Moleculer Runner is a helper script that helps you run Moleculer projects. With it, you don’t need to create a ServiceBroker instance with options. Instead, you can create a moleculer.config.js file in the root of repo with broker options. Then simply call the moleculer-runner in NPM script, and it will automatically load the configuration file, create the broker and load the services. Alternatively, you can declare your configuration as environment variables.
+
+Moleculer cli
+ Provides features
+1.create projects
+2.mananage project life cycles
+3.which embeded moleculer runner.
+
+npm i -g moleculer-cli
+
+
+
+
+
+
+
